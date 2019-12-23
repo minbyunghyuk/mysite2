@@ -41,6 +41,26 @@ public class UserController extends HttpServlet {
 			WebUtil.forward(request, response, "/WEB-INF/views/user/joinsuccess.jsp");
 		} else if("loginform".equals(action)){
 			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
+		} else if("updateform".equals(action)){
+			/* 접근 제어(ACL) */
+			HttpSession session = request.getSession();
+			if(session == null) {
+				WebUtil.redirect(request, response, request.getContextPath());
+				return;
+			}
+			
+			UserVo authUser = (UserVo)session.getAttribute("authUser");
+			if(authUser == null) {
+				WebUtil.redirect(request, response, request.getContextPath());
+				return;
+			}
+			
+			Long no = authUser.getNo();
+			UserVo userVo = new UserDao().find(no);
+			
+			request.setAttribute("userVo", userVo);
+			WebUtil.forward(request, response, "/WEB-INF/views/user/updateform.jsp");
+			
 		} else if("login".equals(action)){
 			String email = request.getParameter("email");
 			String password = request.getParameter("password");
