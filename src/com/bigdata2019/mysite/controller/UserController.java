@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.bigdata2019.mysite.repository.UserDao;
 import com.bigdata2019.mysite.vo.UserVo;
@@ -51,8 +52,30 @@ public class UserController extends HttpServlet {
 			}
 			
 			// 로그인 처리
+			HttpSession session = request.getSession(true);
+			session.setAttribute("authUser", vo);
 			
+			// main으로 리다이렉트
+			WebUtil.redirect(request, response, request.getContextPath());
 			
+		} else if("logout".equals(action)){
+			HttpSession session = request.getSession();
+			if(session == null) {
+				WebUtil.redirect(request, response, request.getContextPath());
+				return;
+			}
+			
+			UserVo authUser = (UserVo)session.getAttribute("authUser");
+			if(authUser == null) {
+				WebUtil.redirect(request, response, request.getContextPath());
+				return;
+			}
+			
+			// logout 처리
+			session.removeAttribute("authUser");
+			session.invalidate();
+			
+			WebUtil.redirect(request, response, request.getContextPath());
 		} else {
 			WebUtil.redirect(request, response, request.getContextPath());
 		}
