@@ -13,6 +13,10 @@
 		<servlet-name>GuestbookController</servlet-name>
 		<servlet-class>com.bigdata2019.mysite.controller.GuestbookController</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>UserController</servlet-name>
+		<servlet-class>com.bigdata2019.mysite.controller.UserController</servlet-class>
+	</servlet>
 
 
 
@@ -23,6 +27,10 @@
 	<servlet-mapping>
 		<servlet-name>GuestbookController</servlet-name>
 		<url-pattern>/guestbook</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>UserController</servlet-name>
+		<url-pattern>/user</url-pattern>
 	</servlet-mapping>	
 	
 	
