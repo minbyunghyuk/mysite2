@@ -38,6 +38,21 @@ public class UserController extends HttpServlet {
 		
 		} else if("joinsuccess".equals(action)){
 			WebUtil.forward(request, response, "/WEB-INF/views/user/joinsuccess.jsp");
+		} else if("loginform".equals(action)){
+			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
+		} else if("login".equals(action)){
+			String email = request.getParameter("email");
+			String password = request.getParameter("password");
+		
+			UserVo vo = new UserDao().find(email, password);
+			if(vo == null) {
+				WebUtil.redirect(request, response, request.getContextPath() + "/user?a=loginform&result=fail");
+				return;
+			}
+			
+			// 로그인 처리
+			
+			
 		} else {
 			WebUtil.redirect(request, response, request.getContextPath());
 		}
