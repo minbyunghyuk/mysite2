@@ -13,11 +13,10 @@
 			<div id="content">
 				<div id="site-introduction">
 					<img id="profile" style="width:120px" src="<%=request.getContextPath() %>/assets/images/kickscar.jpg">
-					<h2>안녕하세요. 안대혁의  mysite에 오신 것을 환영합니다.</h2>
+					<h2>이게뭐라고 밤까지 이짓을하고있냐</h2>
 					<p>
-						이 사이트는  웹 프로그램밍 실습과제 예제 사이트입니다.<br>
-						메뉴는  사이트 소개, 방명록, 게시판이 있구요. Java 수업 + 데이터베이스 수업 + 웹프로그래밍 수업 배운 거 있는거 없는 거 다 합쳐서
-						만들어 놓은 사이트 입니다.<br><br>
+						깃허브날리지말고 커밋좀제대로하자.<br>
+					    안그래도쓰레기인데 언제인간되니 쓰레기야 <br><br>
 						<a href="<%=request.getContextPath() %>/guestbook">방명록</a>에 글 남기기<br>
 					</p>
 				</div>
