@@ -65,7 +65,7 @@
 				<!-- pager 추가 -->
 				
 				<div class="bottom">
-					<a href="" id="new-book">글쓰기</a>
+					<a href="<%=request.getContextPath() %>/board?a=writeform" id="new-book">글쓰기</a>
 				</div>				
 			</div>
 		</div>
