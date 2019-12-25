@@ -12,7 +12,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-					<img id="profile" style="width:120px" src="<%=request.getContextPath() %>/assets/images/kickscar.jpg">
+					<img id="profile" style="width:120px" src="<%=request.getContextPath() %>/assets/images/background.jpg">
 					<h2>이게뭐라고 밤까지 이짓을하고있냐</h2>
 					<p>
 						깃허브날리지말고 커밋좀제대로하자.<br>

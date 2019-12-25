@@ -43,7 +43,7 @@
 						<td><%=vo.getUserName() %></td>
 						<td><%=vo.getHit() %></td>
 						<td><%=vo.getRegDate() %></td>
-						<td><a href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getUserNo() %>" class="del">삭제</a></td>
+						<td><a href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo() %>" class="del">삭제</a></td>
 					</tr>
 				</table>
 				<%

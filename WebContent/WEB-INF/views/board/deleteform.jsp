@@ -32,9 +32,7 @@
 			</form>
 
 
-			<a
-				href="<%=request.getContextPath()%>/board?a=deleteㄹ&no=<%=vo.getNo()%>">
-				취소</a>
+			<a href="<%=request.getContextPath()%>/board">취소</a>
 
 		</div>
 	</div>
