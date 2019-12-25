@@ -19,6 +19,7 @@
 	<div id="container">
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
+		
 			<div id="board">
 				<form id="search_form" action="" method="post">
 					<input type="text" id="kwd" name="kwd" value=""> <input
@@ -38,11 +39,11 @@
 					</tr>
 					<tr>
 						<td><%=vo.getNo() %></td>
-						<td><a href=""><%=vo.getTitle() %></a></td>
+						<td><a href="<%=request.getContextPath()%>/board?a=view&no=<%=vo.getNo()%>"><%=vo.getTitle() %></a></td>
 						<td><%=vo.getUserName() %></td>
 						<td><%=vo.getHit() %></td>
 						<td><%=vo.getRegDate() %></td>
-						<td><a href="" class="del">삭제</a></td>
+						<td><a href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getUserNo() %>" class="del">삭제</a></td>
 					</tr>
 				</table>
 				<%

@@ -20,7 +20,7 @@ public class UserDao {
 			conn = getConnection();
 			
 			String sql = 
-				"select no, name, email, gender" + 
+				"select no, name, email, gender , password" + 
 				"  from user" + 
 				" where no=?";
 			pstmt = conn.prepareStatement(sql);
@@ -34,6 +34,7 @@ public class UserDao {
 				result.setName(rs.getString(2));
 				result.setEmail(rs.getString(3));
 				result.setGender(rs.getString(4));
+				result.setPassword(rs.getString(5));
 			}
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 클래스 로딩 실패:" + e);
@@ -82,6 +83,49 @@ public class UserDao {
 				result = new UserVo();
 				result.setNo(rs.getLong(1));
 				result.setName(rs.getString(2));
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 클래스 로딩 실패:" + e);
+		} catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return result;
+	}
+	public Boolean findpassword( String password ){
+		Boolean result = false;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = "select * from user \r\n" + 
+					"where password = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			//pstmt.setString(1, email);
+			pstmt.setString(1, password);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = true;
+				return result;
 			}
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 클래스 로딩 실패:" + e);
