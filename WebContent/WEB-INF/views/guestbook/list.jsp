@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="com.bigdata2019.mysite.vo.GuestbookVo"%>
-<%@page import="com.bigdata2019.mysite.repository.GuestbookDao"%>
+<%@page import="com.bigdata2019.mysite.repository.GuestbookDao" %>
 <!DOCTYPE html>
 <%
 	List<GuestbookVo> list = new GuestbookDao().findAll();

@@ -16,15 +16,14 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="user">
-
-				<form id="join-form" name="joinForm" method="post" action="<%=request.getContextPath() %>/user">
+				<form id="join-form" name="joinForm" method="post" action="<%=request.getContextPath() %>/user?a=update">
 					<input type="hidden" name="a" value="update"/>
 					
 					<label class="block-label" for="name">이름</label>
 					<input id="name" name="name" type="text" value="<%=userVo.getName() %>">
 
 					<label class="block-label" for="email">이메일</label>
-					<h4><%=userVo.getEmail() %></h4>
+					<input id="email" name="email" readonly type="text" value="<%=userVo.getEmail()%>">
 					
 					<label class="block-label">패스워드</label>
 					<input name="password" type="password" value="">

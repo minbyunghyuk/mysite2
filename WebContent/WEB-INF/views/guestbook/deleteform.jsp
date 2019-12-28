@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="com.bigdata2019.mysite.vo.GuestbookVo"%>
-<%@page import="com.bigdata2019.mysite.repository.GuestbookDao"%>
+
 <!DOCTYPE html>
 <%
 	Long no = Long.parseLong(request.getParameter("no"));
