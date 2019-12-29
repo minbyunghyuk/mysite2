@@ -5,9 +5,7 @@
 <!DOCTYPE html>
 <%
 	Long no = Long.parseLong(request.getParameter("no"));
-   // String password = request.getParameter("password");
-
-	
+	// String password = request.getParameter("password");
 %>
 <html>
 <head>
@@ -19,21 +17,21 @@
 <body>
 	<div id="container">
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
-	</div>
-	<div id="content">
-		<div id="board" class="delete-form">
-			<form method="post" action="<%=request.getContextPath()%>/guestbook?a=delete&no=<%=no%>">
-				<input type="hidden" name="a" value="delete"> <input
-					type='hidden' name="no" value=""> <label>비밀번호</label> <input
-					type="password" name="password"> <input type="submit"
-					value="확인">
-			</form>
-			<a
-				href="<%=request.getContextPath()%>/guestbook">
-				취소</a>
+		<div id="content">
+			<div id="board" class="delete-form">
+				<form id=delete_form method="post"
+					action="<%=request.getContextPath()%>/guestbook?a=delete&no=<%=no%>">
+					<input type="hidden" name="a" value="delete"> <input
+						type='hidden' name="no" value=""> <label>비밀번호</label> <input
+						type="password" name="password"> <input type="submit"
+						value="확인"> <a
+						href="<%=request.getContextPath()%>/guestbook"> 취소</a>
+				</form>
+			</div>
 		</div>
+		<jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
+		<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
 	</div>
-	<jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
-	<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
+
 </body>
 </html>

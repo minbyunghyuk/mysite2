@@ -12,6 +12,8 @@ public class BoardVo {
 	
 	private Long userNo;
 	private String userName;
+
+	
 	public Long getNo() {
 		return no;
 	}

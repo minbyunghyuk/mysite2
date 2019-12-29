@@ -9,6 +9,7 @@
 <%
 	Long no = Long.parseLong(request.getParameter("no"));
 	BoardVo vo = new BoardDao().GetVOLongno(no);
+
 	//현재세션을 가지고 와서 이글이 해당사용자가 쓴거면 수정가능하게 
 	HttpSession session1 = request.getSession();
 	if (session == null) {
@@ -73,8 +74,9 @@
 					%>
 
 					<a
-						href="<%=request.getContextPath()%>/board?a=requestwriteform&no=<%=vo.getNo()%>">답글달기</a>
+						href="<%=request.getContextPath()%>/board?a=requestwriteform&g_no=<%=vo.getGroupNo()%>">답글달기</a>
 					<%
+						System.out.println(vo.getGroupNo());
 						}
 					%>
 

@@ -92,8 +92,6 @@ public class BoardController extends HttpServlet {
 
 		} else if ("find".equals(action)) {
 
-			
-			
 				WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 
 		}
@@ -128,13 +126,14 @@ public class BoardController extends HttpServlet {
 			HttpSession session = request.getSession();
 			UserVo authUser = (UserVo) session.getAttribute("authUser");
 			String Requesttitle = request.getParameter("title");
-			Long no = Long.parseLong(request.getParameter("no"));
+			int g_no = Integer.parseInt(request.getParameter("g_no"));
 			String Requestcontents = request.getParameter("contents");
+			
 			Long userno = authUser.getNo(); // 다른사용자일수도있으니 가져오자
 			String username = authUser.getName();
 
-			BoardVo oldvo = new BoardDao().GetVOLongno(no); // 원래글
-
+			BoardVo oldvo = new BoardDao().GetVOg_no(g_no); // 원래글
+			System.out.println(g_no);
 			int Groupno = oldvo.getGroupNo();
 			int orderno = oldvo.getOrderNo() + 1;
 			int depth = oldvo.getDepth() + 1;

@@ -4,8 +4,10 @@
 <%@page import="com.bigdata2019.mysite.vo.BoardVo"%>
 <%@page import="com.bigdata2019.mysite.repository.BoardDao"%>
 <%
-	Long no = Long.parseLong(request.getParameter("no"));
-	BoardVo vo = new BoardDao().GetVOLongno(no);
+	int no = Integer.parseInt(request.getParameter("g_no"));
+	
+	//BoardVo vo = new BoardDao().GetVOg_no(no);
+	
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -22,7 +24,7 @@
 		<div id="content">
 			<div id="board">
 				<form class="board-form" method="post"
-					action="<%=request.getContextPath()%>/board?a=requestwrite&no=<%=vo.getNo()%>">
+					action="<%=request.getContextPath()%>/board?a=requestwrite&g_no=<%=no%>">
 					<input type="hidden" name="a" value="write">
 					<table class="tbl-ex">
 						<tr>
@@ -50,6 +52,6 @@
 		<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
 
 	</div>
-	
+
 </body>
 </html>

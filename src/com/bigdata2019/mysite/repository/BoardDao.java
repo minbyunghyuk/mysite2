@@ -93,6 +93,210 @@ public class BoardDao {
 		}
 	}
 
+	public List<BoardVo> FindStringVoList(String title) {
+		List<BoardVo> result = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = "select * from board\r\n" + "where title = ?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, title);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+
+				BoardVo vo = new BoardVo();
+				vo.setNo(rs.getLong(1));
+				vo.setTitle(rs.getString(2));
+				vo.setContents(rs.getString(3));
+				vo.setRegDate(rs.getString(4));
+				vo.setHit(rs.getInt(5));
+				vo.setGroupNo(rs.getInt(6));
+				vo.setOrderNo(rs.getInt(7));
+				vo.setDepth(rs.getInt(8));
+				vo.setUserNo(rs.getLong(9));
+				vo.setUserName(rs.getString(10));
+				result.add(vo);
+
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 클래스 로딩 실패:" + e);
+		} catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+//	public BoardVo Findg_noVo(int g_no) {
+//		BoardVo result = null;
+//		Connection conn = null;
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//
+//		try {
+//			conn = getConnection();
+//
+//			String sql = "select * from board\r\n" + "where g_no = ?";
+//			pstmt = conn.prepareStatement(sql);
+//
+//			pstmt.setInt(1, g_no);
+//
+//			rs = pstmt.executeQuery();
+//
+//			if (rs.next()) {
+//				result = new BoardVo();
+//				result.setNo(rs.getLong(1));
+//				result.setTitle(rs.getString(2));
+//				result.setContents(rs.getString(3));
+//			}
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("드라이버 클래스 로딩 실패:" + e);
+//		} catch (SQLException e) {
+//			System.out.println("에러:" + e);
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					rs.close();
+//				}
+//				if (pstmt != null) {
+//					pstmt.close();
+//				}
+//				if (conn != null) {
+//					conn.close();
+//				}
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		return result;
+//	}
+
+	public BoardVo GetVOLongno(Long no) {
+		BoardVo result = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = "select  no ,title ,contents ,user_no , g_no , o_no ,depth , user_name from board where no = ?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setLong(1, no);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				result = new BoardVo();
+				result.setNo(rs.getLong(1));
+				result.setTitle(rs.getString(2));
+				result.setContents(rs.getString(3));
+				result.setUserNo(rs.getLong(4));
+				result.setGroupNo(rs.getInt(5));
+				result.setOrderNo(rs.getInt(6));
+				result.setDepth(rs.getInt(7));
+				result.setUserName(rs.getString(8));
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 클래스 로딩 실패:" + e);
+		} catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	public BoardVo GetVOg_no(int no) {
+		BoardVo result = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = getConnection();
+
+			String sql = "select  no ,title ,contents ,user_no , g_no , o_no ,depth , user_name from board where g_no = ?"
+					+ " and depth = (select max(depth) from board)";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setInt(1, no);
+
+			
+			
+		
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				result = new BoardVo();
+				result.setNo(rs.getLong(1));
+				result.setTitle(rs.getString(2));
+				result.setContents(rs.getString(3));
+				result.setUserNo(rs.getLong(4));
+				result.setGroupNo(rs.getInt(5));
+				result.setOrderNo(rs.getInt(6));
+				result.setDepth(rs.getInt(7));
+				result.setUserName(rs.getString(8));
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 클래스 로딩 실패:" + e);
+		} catch (SQLException e) {
+			System.out.println("에러:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
 	public BoardVo GetVo(String title) {
 		BoardVo result = null;
 		Connection conn = null;
@@ -145,101 +349,6 @@ public class BoardDao {
 		return result;
 	}
 
-	public BoardVo Findg_noVo(int g_no) {
-		BoardVo result = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getConnection();
-
-			String sql = "select * from board\r\n" + "where g_no = ?";
-			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setInt(1, g_no);
-
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				result = new BoardVo();
-				result.setNo(rs.getLong(1));
-				result.setTitle(rs.getString(2));
-				result.setContents(rs.getString(3));
-			}
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 클래스 로딩 실패:" + e);
-		} catch (SQLException e) {
-			System.out.println("에러:" + e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	public BoardVo GetVOLongno(Long no) {
-		BoardVo result = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			conn = getConnection();
-
-			String sql = "select  no ,title ,contents ,user_no , g_no , o_no ,depth , user_name from board where no = ?";
-			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setLong(1, no);
-
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				result = new BoardVo();
-				result.setNo(rs.getLong(1));
-				result.setTitle(rs.getString(2));
-				result.setContents(rs.getString(3));
-				result.setUserNo(rs.getLong(4));
-				result.setGroupNo(rs.getInt(5));
-				result.setOrderNo(rs.getInt(6));
-				result.setDepth(rs.getInt(7));
-				result.setUserName(rs.getString(8));
-			}
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 클래스 로딩 실패:" + e);
-		} catch (SQLException e) {
-			System.out.println("에러:" + e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
 	public List<BoardVo> findAll() {
 		List<BoardVo> result = new ArrayList<BoardVo>();
 		Connection conn = null;
@@ -249,7 +358,7 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 
-			String sql = "select * from board order by g_no DESC, o_no ASC\r\n";
+			String sql = "SELECT DISTINCT * FROM board  order by g_no DESC, o_no ASC\r\n";
 
 			pstmt = conn.prepareStatement(sql);
 

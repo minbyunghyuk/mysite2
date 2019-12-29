@@ -21,19 +21,19 @@
 	<div id="container">
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
-			<div id="board" class="delete-form">
-				<form method="post"
+			<div id="board">
+				<form id="delete_form" method="post"
 					action="<%=request.getContextPath()%>/board?a=delete&no=<%=vo.getNo()%>">
-					<input type="hidden" name="a" value="delete">
-					<input type='hidden' name="no" value=""> <label>사용자 비밀번호</label>
-					<input type="password" name="password"> <input type="submit" value="확인">
-					<a href="<%=request.getContextPath()%>/board">취소</a>
+					<input type="hidden" name="a" value="delete"> <input
+						type='hidden' name="no" value=""> <label>사용자 비밀번호</label>
+					<input type="password" name="password"> <input
+						type="submit" value="확인"> <a
+						href="<%=request.getContextPath()%>/board">취소</a>
 				</form>
 			</div>
 		</div>
+		<jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
+		<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
 	</div>
-	<jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
-	<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
-
 </body>
 </html>

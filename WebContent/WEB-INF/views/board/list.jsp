@@ -1,15 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@page import="com.bigdata2019.mysite.web.util.WebUtil"%>
+<%@page import="com.bigdata2019.mysite.vo.UserVo"%>
 <%@page import="java.util.List"%>
+<%@page import=" java.util.ArrayList"%>
 <%@page import="com.bigdata2019.mysite.vo.BoardVo"%>
 <%@page import="com.bigdata2019.mysite.repository.BoardDao"%>
+<%@page import=" java.util.HashSet"%>
 <!DOCTYPE html>
 <%
-	//list다가져와
-	List<BoardVo> list = new BoardDao().findAll();
+	HttpSession session1 = request.getSession();
+	if (session == null) {
+		WebUtil.redirect(request, response, request.getContextPath());
+		return;
+	}
 
-	//현재 세션 가져와서 내가쓴게아니면 답글표시하고 내가쓴거면 수정표시하게 변경
+	UserVo authUser = (UserVo) session.getAttribute("authUser");
+	if (authUser == null) {
+		WebUtil.redirect(request, response, request.getContextPath());
+		return;
+	}
 %>
+
 <html>
 <head>
 <title>mysite</title>
@@ -21,101 +33,30 @@
 	<div id="container">
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
-
+			<form id="search_form"
+				action="<%=request.getContextPath()%>/board?a=find" method="post">
+				<input type="text" id="kwd" name="kwd" value=""> <input
+					type="submit" value="찾기">
+			</form>
 			<div id="board">
 				<%
 					String kwd = request.getParameter("kwd");
+					List<BoardVo> list = new ArrayList<BoardVo>();
+					List<BoardVo> requestlist = new BoardDao().findAll();
 
-					if (kwd != null) {
-						int index = 1;
-						BoardVo	vo = new BoardDao().GetVo(kwd);
-				%>
-				
-				<form id="search_form"
-					action="<%=request.getContextPath()%>/board?a=find" method="post">
-					<input type="text" id="kwd" name="kwd" value=""> <input
-						type="submit" value="찾기">
-				</form>
-				
-				<table class="tbl-ex">
-					<tr>
-						<th>번호</th>
-						<th>제목</th>
-						<th>글쓴이</th>
-						<th>조회수</th>
-						<th>작성일</th>
-						<th>&nbsp;</th>
-					</tr>
+					int index = 1;
+					if (kwd == null) {
+						list = new BoardDao().findAll();
+					}
 
-					<tr>
-						<td>[<%=index++%>]
-						</td>
-						<td><a
-							href="<%=request.getContextPath()%>/board?a=view&no=<%=vo.getNo()%>"><%=vo.getTitle()%></a></td>
-						<td><%=vo.getUserName()%></td>
-						<td><%=vo.getHit()%></td>
-						<td><%=vo.getRegDate()%></td>
-						<td><a
-							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo()%>"
-							class="del">삭제</a></td>
-					</tr>
-				</table>
-				
-				
-				<%
-					//여기서 만약 현재글의 groupnum이 같은게있으면 가져와서 표시 
-							for (BoardVo requestvo : list) {
-								if (vo.getGroupNo() == requestvo.getGroupNo() && vo.getOrderNo() < requestvo.getOrderNo()) {
-				%>
-				<table>
-					<tr>
+					else {
+						list = new BoardDao().FindStringVoList(kwd);
+					}
 
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<img
-							src="<%=request.getContextPath()%>/assets/images/repicture.gif">
-							<a
-							href="<%=request.getContextPath()%>/board?a=view&no=<%=requestvo.getNo()%>"><%=requestvo.getTitle()%></a>
-						</td>
-						<td><%=vo.getRegDate()%></td>
-						<td><a
-							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo()%>"
-							class="del">삭제</a></td>
-
-						<%
-							}
-									}
-						%>
-
-					</tr>
-
-				</table>
-
-				<%
-				
-					} else {
-
-						int totalCount = list.size();
-						int index = 1;
-				%>
-
-				<form id="search_form"
-					action="<%=request.getContextPath()%>/board?a=find" method="post">
-					<input type="text" id="kwd" name="kwd" value=""> <input
-						type="submit" value="찾기">
-				</form>
-
-
-				<%
 					for (BoardVo vo : list) {
+
+						if (vo.getDepth() == 0) {
 				%>
-
-
-
-
-				<%
-					if (vo.getOrderNo() == 1) {
-				%>
-
 
 				<table class="tbl-ex">
 					<tr>
@@ -126,7 +67,6 @@
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>
-
 					<tr>
 						<td>[<%=index++%>]
 						</td>
@@ -135,17 +75,23 @@
 						<td><%=vo.getUserName()%></td>
 						<td><%=vo.getHit()%></td>
 						<td><%=vo.getRegDate()%></td>
+						<%
+							if (authUser != null && authUser.getName().equals(vo.getUserName())) {
+						%>
+
 						<td><a
 							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo()%>"
 							class="del">삭제</a></td>
+						<%
+							}
+						%>
 					</tr>
 				</table>
-				<%
-					}
-				%>
+
 				<%
 					//여기서 만약 현재글의 groupnum이 같은게있으면 가져와서 표시 
-							for (BoardVo requestvo : list) {
+							for (BoardVo requestvo : requestlist) {
+
 								if (vo.getGroupNo() == requestvo.getGroupNo() && vo.getOrderNo() < requestvo.getOrderNo()) {
 				%>
 				<table>
@@ -157,22 +103,27 @@
 							<a
 							href="<%=request.getContextPath()%>/board?a=view&no=<%=requestvo.getNo()%>"><%=requestvo.getTitle()%></a>
 						</td>
-						<td><%=vo.getRegDate()%></td>
-						<td><a
-							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo()%>"
-							class="del">삭제</a></td>
-
+						<td><%=requestvo.getRegDate()%></td>
 						<%
-							}
-									}
+							if (authUser != null && authUser.getName().equals(vo.getUserName())) {
 						%>
 
+						<td><a
+							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=requestvo.getNo()%>"
+							class="del">삭제</a></td>
+						<%
+							}
+						%>
 					</tr>
-
 				</table>
+
 				<%
 					}
+							}
+						}
+					}
 				%>
+
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
@@ -190,9 +141,6 @@
 				<div class="bottom">
 					<a href="<%=request.getContextPath()%>/board?a=writeform"
 						id="new-book">글쓰기</a>
-					<%
-						}
-					%>
 
 				</div>
 			</div>
