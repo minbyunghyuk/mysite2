@@ -9,13 +9,15 @@ public class BoardVo {
 	private Integer orderNo;
 	private Integer depth;
 	private String regDate;
-	
+
 	private Long userNo;
 	private String userName;
 
+	public int pageno =0;
 	
 	public Long getNo() {
 		return no;
+		
 	}
 	public void setNo(Long no) {
 		this.no = no;

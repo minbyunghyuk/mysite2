@@ -11,16 +11,26 @@
 <%
 	HttpSession session1 = request.getSession();
 	if (session == null) {
-		WebUtil.redirect(request, response, request.getContextPath());
-		return;
+		//로그인을 안해도 일단 게시판표시는해야쥬?	
+		//WebUtil.redirect(request, response, request.getContextPath());
 	}
 
 	UserVo authUser = (UserVo) session.getAttribute("authUser");
 	if (authUser == null) {
-		WebUtil.redirect(request, response, request.getContextPath());
-		return;
+		//로그인을 안해도 일단 게시판표시는해야쥬?	
+		//WebUtil.redirect(request, response, request.getContextPath());
+
 	}
+
+	String a = request.getParameter("page");
+	int page1 = 1;
+	if (a != null)
+		page1 = Integer.parseInt(request.getParameter("page"));
+
+	//System.out.println(page1);
+	List<BoardVo> requestlist = new BoardDao().findAll();
 %>
+
 
 <html>
 <head>
@@ -40,10 +50,16 @@
 			</form>
 			<div id="board">
 				<%
+					//코드로때워야지뭐
+					//일단어떤리스트가 됬던 5개로 짤러 그다음 화면 출력부터해보자.
+					//리스트를 계속 new를 해줘야된다니 노답인데
+
 					String kwd = request.getParameter("kwd");
 					List<BoardVo> list = new ArrayList<BoardVo>();
-					List<BoardVo> requestlist = new BoardDao().findAll();
 
+					int lastpage = 0;
+					int startpage = 0;
+					int listcount = 1;
 					int index = 1;
 					if (kwd == null) {
 						list = new BoardDao().findAll();
@@ -56,6 +72,35 @@
 					for (BoardVo vo : list) {
 
 						if (vo.getDepth() == 0) {
+							vo.pageno = listcount;
+							listcount++;
+						}
+
+						//System.out.println(vo.pageno);
+						if (page1 == 1) {
+							startpage = 1;
+							lastpage = 11;
+						}
+						if (page1 == 2) {
+							startpage = 11;
+							lastpage = 21;
+						}
+						if (page1 == 3) {
+							startpage = 21;
+							lastpage = 31;
+						}
+						if (page1 == 4) {
+							startpage = 31;
+							lastpage = 41;
+						}
+						if (page1 == 5) {
+							startpage = 41;
+							lastpage = 51;
+						}
+
+						if (vo.getDepth() == 0 && vo.pageno < lastpage && vo.pageno >= startpage) {
+
+							//System.out.println(startpage);
 				%>
 
 				<table class="tbl-ex">
@@ -68,7 +113,7 @@
 						<th>&nbsp;</th>
 					</tr>
 					<tr>
-						<td>[<%=index++%>]
+						<td>[<%=vo.pageno%>]
 						</td>
 						<td><a
 							href="<%=request.getContextPath()%>/board?a=view&no=<%=vo.getNo()%>"><%=vo.getTitle()%></a></td>
@@ -104,16 +149,26 @@
 							href="<%=request.getContextPath()%>/board?a=view&no=<%=requestvo.getNo()%>"><%=requestvo.getTitle()%></a>
 						</td>
 						<td><%=requestvo.getRegDate()%></td>
+
 						<%
-							if (authUser != null && authUser.getName().equals(vo.getUserName())) {
+							if (authUser != null) {
 						%>
 
+
+
+						<%
+							if (authUser != null && authUser.getName().equals(vo.getUserName())
+														|| authUser.getName().equals(requestvo.getUserName())) {
+						%>
 						<td><a
-							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=requestvo.getNo()%>"
+							href="<%=request.getContextPath()%>/board?a=deleteform&no=<%=vo.getNo()%>"
 							class="del">삭제</a></td>
 						<%
 							}
+											}
 						%>
+
+
 					</tr>
 				</table>
 
@@ -125,15 +180,87 @@
 				%>
 
 				<!-- pager 추가 -->
-				<div class="pager">
+				<div class="pager" id="page">
+
 					<ul>
-						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
-						<li><a href="">▶</a></li>
+
+						<%
+							if (page1 == 1) {
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=1">◀</a></li>
+						<%
+							} else {
+
+								page1 = page1 - 1;
+						%>
+
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=<%=page1%>">◀</a></li>
+
+						<%
+							}
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=1">1</a></li>
+						<%
+							if (listcount > 11) {
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=2">2</a></li>
+						<%
+							}
+						%>
+						<%
+							if (listcount > 21) {
+						%>
+
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=3">3</a></li>
+						<%
+							}
+						%>
+						<%
+							if (listcount > 31) {
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=4">4</a></li>
+						<%
+							}
+						%>
+						<%
+							if (listcount > 41) {
+								page1 = page1 + 1;
+								System.out.println(page1);
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=5">5</a></li>
+						<%
+							if (page1 == 5) {
+						%>
+
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=5">▶</a></li>
+						<%
+							} else {
+
+									page1 = page1 + 1;
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=<%=page1%>">▶</a></li>
+
+						<%
+							}
+						%>
+
+
+						<%
+							}
+							page1 = page1 + 1;
+						%>
+						<li><a
+							href="<%=request.getContextPath()%>/board?a=list&page=<%=page1%>">▶</a></li>
+
 					</ul>
 				</div>
 				<!-- pager 추가 -->

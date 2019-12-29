@@ -5,6 +5,8 @@
 <%@page import="java.util.List"%>
 <%@page import="com.bigdata2019.mysite.vo.BoardVo"%>
 <%@page import="com.bigdata2019.mysite.repository.BoardDao"%>
+
+
 <!DOCTYPE html>
 <%
 	Long no = Long.parseLong(request.getParameter("no"));
@@ -13,14 +15,10 @@
 	//현재세션을 가지고 와서 이글이 해당사용자가 쓴거면 수정가능하게 
 	HttpSession session1 = request.getSession();
 	if (session == null) {
-		WebUtil.redirect(request, response, request.getContextPath());
-		return;
 	}
 
 	UserVo authUser = (UserVo) session.getAttribute("authUser");
 	if (authUser == null) {
-		WebUtil.redirect(request, response, request.getContextPath());
-		return;
 	}
 
 	boolean SessionUserName = false;
@@ -59,26 +57,29 @@
 				</table>
 
 				<div class="bottom">
-					<a href="<%=request.getContextPath()%>/board">글목록</a>
+
 
 					<%
-						if (authUser!= null &&authUser.getName().equals(vo.getUserName())) {
-
-
+						if (authUser != null && authUser.getName().equals(vo.getUserName())) {
 					%>
 					<a
 						href="<%=request.getContextPath()%>/board?a=modifyform&no=<%=vo.getNo()%>">글수정</a>
-
+					<a href="<%=request.getContextPath()%>/board">글목록</a>
 					<%
-						} else {
+						} else if (authUser != null) {
 					%>
 
 					<a
 						href="<%=request.getContextPath()%>/board?a=requestwriteform&g_no=<%=vo.getGroupNo()%>">답글달기</a>
+					<a href="<%=request.getContextPath()%>/board">글목록</a>
 					<%
-						System.out.println(vo.getGroupNo());
+						} else {
+					%>
+					<a href="<%=request.getContextPath()%>/board">글목록</a>
+					<%
 						}
 					%>
+
 
 				</div>
 			</div>

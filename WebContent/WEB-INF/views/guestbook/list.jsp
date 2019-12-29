@@ -2,10 +2,26 @@
 	pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="com.bigdata2019.mysite.vo.GuestbookVo"%>
-<%@page import="com.bigdata2019.mysite.repository.GuestbookDao" %>
+<%@page import="com.bigdata2019.mysite.repository.GuestbookDao"%>
+<%@page import="com.bigdata2019.mysite.web.util.WebUtil"%>
+<%@page import="com.bigdata2019.mysite.vo.UserVo"%>
+
 <!DOCTYPE html>
 <%
 	List<GuestbookVo> list = new GuestbookDao().findAll();
+
+	HttpSession session1 = request.getSession();
+	if (session == null) {
+		//로그인을 안해도 일단 게시판표시는해야쥬?	
+		//WebUtil.redirect(request, response, request.getContextPath());
+	}
+
+	UserVo authUser = (UserVo) session.getAttribute("authUser");
+	if (authUser == null) {
+		//로그인을 안해도 일단 게시판표시는해야쥬?	
+		//WebUtil.redirect(request, response, request.getContextPath());
+
+	}
 %>
 
 
@@ -22,7 +38,8 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="guestbook">
-				<form action="<%=request.getContextPath()%>/guestbook?a=insert" method="post">
+				<form action="<%=request.getContextPath()%>/guestbook?a=insert"
+					method="post">
 					<input type="hidden" name="a" value="insert">
 					<table>
 						<tr>
@@ -43,18 +60,25 @@
 				<ul>
 					<%
 						for (GuestbookVo vo : list) {
-							
 					%>
 					<li>
 						<table>
 							<tr>
-								<td><%=vo.getNo() %></td>
-								<td><%=vo.getName() %></td>
-								<td><%=vo.getRegDate() %></td>
-								<td><a href="<%=request.getContextPath()%>/guestbook?a=deleteform&no=<%=vo.getNo()%>">삭제</a></td>
+								<td><%=vo.getNo()%></td>
+								<td><%=vo.getName()%></td>
+								<td><%=vo.getRegDate()%></td>
+
+								<%
+									if (authUser != null) {
+								%>
+								<td><a
+									href="<%=request.getContextPath()%>/guestbook?a=deleteform&no=<%=vo.getNo()%>">삭제</a></td>
+								<%
+									}
+								%>
 							</tr>
 							<tr>
-								<td colspan=4><%=vo.getContents() %>	</td>
+								<td colspan=4><%=vo.getContents()%></td>
 							</tr>
 						</table> <br>
 					</li>

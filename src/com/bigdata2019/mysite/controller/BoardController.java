@@ -33,6 +33,8 @@ public class BoardController extends HttpServlet {
 
 			if (sessionresult)
 				WebUtil.forward(request, response, "/WEB-INF/views/board/write.jsp");
+			else
+				WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
 
 		}
 
@@ -41,28 +43,56 @@ public class BoardController extends HttpServlet {
 			sessionresult = Checksession(request, response);
 
 			if (sessionresult) {
+
 				HttpSession session = request.getSession();
 				UserVo authUser = (UserVo) session.getAttribute("authUser");
 				String title = request.getParameter("title");
 				String contents = request.getParameter("contents");
+
 				Long userno = authUser.getNo();
 				String username = authUser.getName();
 
-				BoardVo vo = new BoardVo();
-				vo.setTitle(title);
-				vo.setContents(contents);
-				vo.setUserNo(userno);
-				vo.setUserName(username);
+				if (title == "" || contents == "") {
+					// 내용없이 등록하면 다시하게 냥 창만 띄워놈
+					WebUtil.forward(request, response, "/WEB-INF/views/board/write.jsp");
+				}
 
-				new BoardDao().insert(vo); // min보여줄려는 리스트를 넣어주고
+				else {
 
-				vo = new BoardDao().GetVo(vo.getTitle());
-				WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
-			}
+					BoardVo vo = new BoardVo();
+					vo.setTitle(title);
+					vo.setContents(contents);
+					vo.setUserNo(userno);
+					vo.setUserName(username);
+
+					new BoardDao().insert(vo); // min보여줄려는 리스트를 넣어주고
+
+					vo = new BoardDao().GetVo(vo.getTitle());
+					WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
+				}
+			} else
+				WebUtil.forward(request, response, "/WEB-INF/views/board/view.jsp");
 
 		} else if ("view".equals(action)) {
 			// min 여기서 board내용을 view뿌려줘야되나? 안에서 처리할까?
+			Long no = Long.parseLong(request.getParameter("no"));
+			sessionresult = Checksession(request, response);
+			if (sessionresult) {
+				HttpSession session = request.getSession();
+				UserVo authUser = (UserVo) session.getAttribute("authUser");
+
+				BoardVo vo = new BoardDao().GetVOLongno(no);
+
+				if (authUser.getName().equals(vo.getUserName())) {
+
+					WebUtil.forward(request, response, "/WEB-INF/views/board/view.jsp");
+					return;
+				}
+
+			} else
+				new BoardDao().UpdateVoHit(no);
 			WebUtil.forward(request, response, "/WEB-INF/views/board/view.jsp");
+
 		} else if ("modifyform".equals(action)) {
 
 			sessionresult = Checksession(request, response);
@@ -70,7 +100,8 @@ public class BoardController extends HttpServlet {
 			if (sessionresult) {
 				// 새로운창을 보여줘야될때는 기능명뒤에 Form으로 변경 기능실행은 기능명으로 함
 				WebUtil.forward(request, response, "/WEB-INF/views/board/modify.jsp");
-			}
+			} else
+				WebUtil.forward(request, response, "/WEB-INF/views/board/view.jsp");
 
 		} else if ("modify".equals(action)) {
 			// 업데이트를여기서해야되나?
@@ -89,10 +120,12 @@ public class BoardController extends HttpServlet {
 
 			if (sessionresult)
 				WebUtil.forward(request, response, "/WEB-INF/views/board/deleteform.jsp");
+			else
+				WebUtil.forward(request, response, "/WEB-INF/views/board/view.jsp");
 
 		} else if ("find".equals(action)) {
 
-				WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
+			WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 
 		}
 
@@ -105,14 +138,23 @@ public class BoardController extends HttpServlet {
 			Boolean result = new UserDao().findpassword(password);
 			if (result == true) {
 
-				BoardVo mainvo = new BoardDao().GetVOLongno(no); // 현재삭제할꺼
-
-				int maing_no = mainvo.getGroupNo();
-
 				List<BoardVo> listvo = new BoardDao().findAll(); // g_no랑 비교할꺼
+				BoardVo mainvo = new BoardDao().GetVOLongno(no); // 그냥 그룹넘버가 같은걸 다지워야지뭐
 
-				for (BoardVo vo : listvo) {
+				if (mainvo.getDepth() == 0) {
+
+					for (BoardVo vo : listvo) {
+						if (vo.getGroupNo() == mainvo.getGroupNo()) {
+
+							new BoardDao().delete(vo.getNo());
+						}
+					}
+
 					new BoardDao().delete(mainvo.getNo());
+				} else {
+
+					new BoardDao().delete(mainvo.getNo());
+
 				}
 
 				WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
@@ -123,32 +165,37 @@ public class BoardController extends HttpServlet {
 
 		} else if ("requestwrite".equals(action)) {
 
-			HttpSession session = request.getSession();
-			UserVo authUser = (UserVo) session.getAttribute("authUser");
-			String Requesttitle = request.getParameter("title");
-			int g_no = Integer.parseInt(request.getParameter("g_no"));
-			String Requestcontents = request.getParameter("contents");
-			
-			Long userno = authUser.getNo(); // 다른사용자일수도있으니 가져오자
-			String username = authUser.getName();
+			sessionresult = Checksession(request, response);
+			if (sessionresult) {
 
-			BoardVo oldvo = new BoardDao().GetVOg_no(g_no); // 원래글
-			System.out.println(g_no);
-			int Groupno = oldvo.getGroupNo();
-			int orderno = oldvo.getOrderNo() + 1;
-			int depth = oldvo.getDepth() + 1;
-			BoardVo newvo = new BoardVo(); // 답글
-			newvo.setTitle(Requesttitle);
-			newvo.setContents(Requestcontents);
-			newvo.setGroupNo(Groupno);
-			newvo.setOrderNo(orderno);
-			newvo.setDepth(depth);
-			newvo.setUserNo(userno); // 답글을 다는 유저
-			newvo.setUserName(username); // 답글을 다는 유저
+				HttpSession session = request.getSession();
+				UserVo authUser = (UserVo) session.getAttribute("authUser");
+				String Requesttitle = request.getParameter("title");
+				int g_no = Integer.parseInt(request.getParameter("g_no"));
+				String Requestcontents = request.getParameter("contents");
 
-			new BoardDao().insertrequest(newvo);
+				Long userno = authUser.getNo(); // 다른사용자일수도있으니 가져오자
+				String username = authUser.getName();
 
-			WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
+				BoardVo oldvo = new BoardDao().GetVOg_no(g_no); // 원래글
+				System.out.println(g_no);
+				int Groupno = oldvo.getGroupNo();
+				int orderno = oldvo.getOrderNo() + 1;
+				int depth = oldvo.getDepth() + 1;
+				BoardVo newvo = new BoardVo(); // 답글
+				newvo.setTitle(Requesttitle);
+				newvo.setContents(Requestcontents);
+				newvo.setGroupNo(Groupno);
+				newvo.setOrderNo(orderno);
+				newvo.setDepth(depth);
+				newvo.setUserNo(userno); // 답글을 다는 유저
+				newvo.setUserName(username); // 답글을 다는 유저
+
+				new BoardDao().insertrequest(newvo);
+
+				WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
+			}
+			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
 
 		} else if ("requestwriteform".equals(action)) {
 
@@ -171,13 +218,11 @@ public class BoardController extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		if (session == null) {
-			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
 			return false;
 		}
 
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
 		if (authUser == null) {
-			WebUtil.forward(request, response, "/WEB-INF/views/user/loginform.jsp");
 			return false;
 		}
 
