@@ -201,6 +201,11 @@
 						<%
 							}
 						%>
+						
+						
+						
+						
+						
 						<li><a
 							href="<%=request.getContextPath()%>/board?a=list&page=1">1</a></li>
 						<%

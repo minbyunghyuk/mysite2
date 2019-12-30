@@ -125,6 +125,11 @@ public class BoardController extends HttpServlet {
 
 		} else if ("find".equals(action)) {
 
+			
+			
+			
+			
+			
 			WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 
 		}
@@ -151,6 +156,7 @@ public class BoardController extends HttpServlet {
 					}
 
 					new BoardDao().delete(mainvo.getNo());
+					
 				} else {
 
 					new BoardDao().delete(mainvo.getNo());

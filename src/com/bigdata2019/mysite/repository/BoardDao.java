@@ -58,7 +58,7 @@ public class BoardDao {
 	}
 
 	public void UpdateVoLongno(Long no, String title, String contents) {
-		BoardVo result = null;
+	
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -107,7 +107,7 @@ public class BoardDao {
 
 			int r = pstmt.executeUpdate();
 
-			System.out.println("변경된Row" + r);
+			
 
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 클래스 로딩 실패:" + e);
@@ -136,7 +136,8 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 
-			String sql = "select * from board\r\n" + "where title = ?";
+			String sql = "select * from board  where title like '%'  ?  '%'" ;
+			
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, title);
